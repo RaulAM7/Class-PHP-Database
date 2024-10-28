@@ -39,6 +39,7 @@ if (mysqli_query($conn, $sql0)){
 
 // OTRA FORMA DE CREAR REGISTROS EN UNA DB
 
+/*
 $sql1 = "
 INSERT INTO 
 Planets 
@@ -47,7 +48,6 @@ VALUES
 (11, 'Planeta Tierra', 'Core Worlds', 7000000000, '1999-01-01')
 "
 ;
-
 if ($conn->query($sql1))
 {
     echo "New record created sucessfully".PHP_EOL;
@@ -56,3 +56,7 @@ else
 {
     echo "New Error: ". $sql . $conn->error.PHP_EOL;
 }
+*/
+
+// Reading Data
+

@@ -78,7 +78,7 @@ class MySQL
         echo "Distroying connection" . PHP_EOL;
         $conn->close();
     }
-    static public function delete($conn, $table, $whereConditional, $whereValue)
+    static public function deleteRows($conn, $table, $whereConditional, $whereValue)
     {
     
         $sql = "
@@ -95,16 +95,60 @@ class MySQL
         }
         $conn->close();
     }
+    public static function createDatabase($conn, $servername, $username, $password, $databaseName)
+    {
+        $sql = "CREATE DATABASE $databaseName";
+
+        if ($conn->query($sql)) {
+            echo "NEW DATABASE created sucessfully" . PHP_EOL;
+        } else {
+            echo "New Error: " . $sql . $conn->error . PHP_EOL;
+        }
+        echo "Distroying connection" . PHP_EOL;
+        $conn->close();
+    }
+    public static function createTable($conn,$servername, $username, $password, $databaseName, $tableName)
+    {
+        if(self::viewDatabase($conn) == $databaseName)
+        {
+            $sql = "CREATE TABLE $tableName";
+            if ($conn->query($sql)) {
+                echo 'NEW Table created successfully';
+            } else {
+                echo "New Error: " . $sql . $conn->error . PHP_EOL;
+            }
+        }
+    }
     private static function dumpCopyDB($servername, $username, $password, $database, $DumpPath)
     {
         $command = "mysqldump -h $servername -u $username .p$password $database > $DumpPath";
         $output = shell_exec($command);
-
+    
         if ($output === null) {
             echo "Database dump created successfully at $DumpPath" . PHP_EOL;
         } else {
             echo "Error creating database dump: " . $output . PHP_EOL;
         }
+    }
+    public static function viewDatabase($conn){
+        $sql = "SELECT DATABASE()";
+
+        $output = shell_exec($sql); 
+
+        echo $output . PHP_EOL;
+        $conn->close();
+    }
+    public static function deleteDatabase($conn, $servername, $username, $password, $databaseName)
+    {
+        $sql = "DROP DATABASE $databaseName";
+
+        if ($conn->query($sql)) {
+            echo "DATABASE DELETED sucessfully" . PHP_EOL;
+        } else {
+            echo "New Error: " . $sql . $conn->error . PHP_EOL;
+        }
+        echo "Distroying connection" . PHP_EOL;
+        $conn->close();
     }
 }   
 // Create connection
@@ -128,5 +172,10 @@ MySQL::updateSet($conn, 'Planets', 'region', 'Outer Rim', 'planet_id', 15);
 // Deleting Data
 $conn = MySQL::connect($servername, $username, $password, 'Imperial_Database');
 MySQL::checkConnection($conn);
-MySQL::delete($conn, 'Ships', 'ship_id', 11);
+//MySQL::deleteRows($conn, 'Ships', 'ship_id', 11);
 
+//MySQL::createDatabase($conn, $servername, $username, $password, 'PruebaDatabaseMethod3');
+
+$conn = MySQL::connect($servername, $username, $password, 'Imperial_Database');
+MySQL::checkConnection($conn);
+MySQL::viewDatabase($conn);

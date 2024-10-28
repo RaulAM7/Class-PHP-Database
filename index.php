@@ -6,7 +6,8 @@
  $database = "Imperial_Database";
 
 // CREATE
-class MySQL{
+class MySQL
+{
     public static function connect ($servername, $username, $password, $database)
     {
         $new_connect = mysqli_connect($servername, $username, $password, $database);
@@ -60,39 +61,64 @@ class MySQL{
         echo "Distroying connection" . PHP_EOL;
         $conn->close();
     }
-
+    static public function updateSet($conn, $table, $column, $newValue, $whereConditional, $whereValue)
+    {
+        $sql = "
+                UPDATE " . $table . 
+                 " SET " .$column. "="."'{$newValue}'".  
+                 " WHERE ". $whereConditional. "=". $whereValue;
+        
+        if ($conn->query($sql)) 
+        {
+            echo 'The number of affected rows is: '. $conn->affected_rows ."". PHP_EOL;
+            echo "Record updated succesfully" . PHP_EOL;
+        } 
+        else 
+        {
+            echo " Error updating error: " . $conn->error;
+        }
+        echo "Distroying connection" . PHP_EOL;
+        $conn->close();
+    }
+    static public function delete($conn, $table, $whereConditional, $whereValue)
+    {
+    
+        $sql = "
+                 DELETE FROM ". $table.
+                " WHERE ". $whereConditional. "=". $whereValue;
+    
+        if ($conn->query($sql)) 
+        {
+            echo 'The number of affected rows is: ' . $conn->affected_rows . "" . PHP_EOL;
+            echo "Record deleted successfully";
+        } else 
+        {
+            echo "Error deleting record: " . $conn->error;
+        }
+        $conn->close();
+    }
 }
 // Create connection
-$conn0 = MySQL::connect($servername, $username, $password, $database);
-MySQL::checkConnection($conn0);
-
+$conn = MySQL::connect($servername, $username, $password, $database);
+MySQL::checkConnection($conn);
 
 // CRUD Operations (Create, Read (All, One), Update, Delete)
+
 // Create Data
 //MySQL::query_insertInto( 'Planets', $conn0);
 
 // Reading ALL Data from a table
-$conn1 = MySQL::connect($servername, $username, $password, $database);
-MySQL::checkConnection($conn1);
-MySQL::selectFrom($conn1, '*', 'Planets', 'planet_id', 15).PHP_EOL;
+$conn = MySQL::connect($servername, $username, $password, $database);
+MySQL::checkConnection($conn);
+MySQL::selectFrom($conn, '*', 'Planets', 'planet_id', 15).PHP_EOL;
 
-// Update Data 
+// Update Data
+$conn = MySQL::connect($servername, $username, $password, $database);
+MySQL::checkConnection($conn);
+MySQL::updateSet($conn, 'Planets', 'region', 'Outer Rim', 'planet_id', 15);
 
-$conn2 = MySQL::connect($servername, $username, $password, $database);
-MySQL::checkConnection($conn1);
+// Deleting Data
+$conn = MySQL::connect($servername, $username, $password, $database);
+MySQL::checkConnection($conn);
+MySQL::delete($conn, 'Ships', 'ship_id', 11);
 
-
-function update($conn, $table, $column, $newValue, $whereConditional, $whereValue){
-    $sql = "
-    UPDATE " . $table . 
-    " SET " .$column. "="."'{$newValue}'".  
-    " WHERE ". $whereConditional. "=". $whereValue;
-    
-    if ($conn->query($sql)) {
-        echo "Record updated succesfully";
-    } else {
-        echo " Error updating error: " . $conn->error;
-    }
-
-}
-update($conn2, 'Planets', 'region', 'Outer Worlds', 'planet_id', 15);

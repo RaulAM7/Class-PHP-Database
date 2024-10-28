@@ -19,44 +19,26 @@ echo "Connected successfully".PHP_EOL;
 // CRUD Operations (Create, Read (All, One), Update, Delete)
 
 // CREATE
-// Write the query
-/*
-$sql0 = "
-INSERT INTO 
-Ships 
-(ship_id, ship_name, ship_type, capacity, in_service) 
+
+function query_insertInto($table, $conn)
+{
+    global $conn;
+    $sql = "
+    INSERT INTO ". 
+    $table. 
+    " (planet_id, planet_name, region, population, discovered_date) 
 VALUES 
-(13, 'El Corsario Verde', 'Starfighter', 10, 'Independent')
+(13, 'Jupiter', 'Core Worlds', 1, '1999-01-01')
 ";
-
-// Executing the query
-if (mysqli_query($conn, $sql0)){
-    echo 'New record created successfully'.PHP_EOL;
-} else {
-    echo 'ERROR'. mysqli_error($conn)-PHP_EOL;
+    if ($conn->query($sql)) {
+        echo "New record created sucessfully" . PHP_EOL;
+    } else {
+        echo "New Error: " . $sql . $conn->error . PHP_EOL;
+    }
 }
-*/
 
-// OTRA FORMA DE CREAR REGISTROS EN UNA DB
+query_insertInto("Planets", $conn);
 
-/*
-$sql1 = "
-INSERT INTO 
-Planets 
-(planet_id, planet_name, region, population, discovered_date) 
-VALUES 
-(11, 'Planeta Tierra', 'Core Worlds', 7000000000, '1999-01-01')
-"
-;
-if ($conn->query($sql1))
-{
-    echo "New record created sucessfully".PHP_EOL;
-}
-else
-{
-    echo "New Error: ". $sql . $conn->error.PHP_EOL;
-}
-*/
 
 // Reading Data
 

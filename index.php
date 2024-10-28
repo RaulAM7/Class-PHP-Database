@@ -1,10 +1,8 @@
 <?php
-
  $servername = "localhost";
  $username = "raul";
  $password = "student2024";
  $database = "Imperial_Database";
-
 // CREATE
 class MySQL
 {
@@ -97,28 +95,38 @@ class MySQL
         }
         $conn->close();
     }
-}
+    private static function dumpCopyDB($servername, $username, $password, $database, $DumpPath)
+    {
+        $command = "mysqldump -h $servername -u $username .p$password $database > $DumpPath";
+        $output = shell_exec($command);
+
+        if ($output === null) {
+            echo "Database dump created successfully at $DumpPath" . PHP_EOL;
+        } else {
+            echo "Error creating database dump: " . $output . PHP_EOL;
+        }
+    }
+}   
 // Create connection
-$conn = MySQL::connect($servername, $username, $password, $database);
+$conn = MySQL::connect($servername, $username, $password, 'Imperial_Database');
 MySQL::checkConnection($conn);
 
 // CRUD Operations (Create, Read (All, One), Update, Delete)
-
 // Create Data
 //MySQL::query_insertInto( 'Planets', $conn0);
 
 // Reading ALL Data from a table
-$conn = MySQL::connect($servername, $username, $password, $database);
+$conn = MySQL::connect($servername, $username, $password, 'Imperial_Database');
 MySQL::checkConnection($conn);
 MySQL::selectFrom($conn, '*', 'Planets', 'planet_id', 15).PHP_EOL;
 
 // Update Data
-$conn = MySQL::connect($servername, $username, $password, $database);
+$conn = MySQL::connect($servername, $username, $password, 'Imperial_Database');
 MySQL::checkConnection($conn);
 MySQL::updateSet($conn, 'Planets', 'region', 'Outer Rim', 'planet_id', 15);
 
 // Deleting Data
-$conn = MySQL::connect($servername, $username, $password, $database);
+$conn = MySQL::connect($servername, $username, $password, 'Imperial_Database');
 MySQL::checkConnection($conn);
 MySQL::delete($conn, 'Ships', 'ship_id', 11);
 

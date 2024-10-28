@@ -77,3 +77,22 @@ MySQL::checkConnection($conn1);
 MySQL::selectFrom($conn1, '*', 'Planets', 'planet_id', 15).PHP_EOL;
 
 // Update Data 
+
+$conn2 = MySQL::connect($servername, $username, $password, $database);
+MySQL::checkConnection($conn1);
+
+
+function update($conn, $table, $column, $newValue, $whereConditional, $whereValue){
+    $sql = "
+    UPDATE " . $table . 
+    " SET " .$column. "="."'{$newValue}'".  
+    " WHERE ". $whereConditional. "=". $whereValue;
+    
+    if ($conn->query($sql)) {
+        echo "Record updated succesfully";
+    } else {
+        echo " Error updating error: " . $conn->error;
+    }
+
+}
+update($conn2, 'Planets', 'region', 'Outer Worlds', 'planet_id', 15);

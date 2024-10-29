@@ -1,16 +1,23 @@
 <?php
- $servername = "localhost";
- $username = "raul";
- $password = "student2024";
- $database = "Imperial_Database";
+$servername = "localhost";
+$username = "raul";
+$password = "student2024";
+$database = "Imperial_Database";
 // CREATE
 class MySQL
 {
-    public static function connect ($servername, $username, $password, $database)
+    public static function connect($servername, $username, $password, $database)
     {
-        $new_connect = mysqli_connect($servername, $username, $password, $database);
+        try {
+            $new_connect = mysqli_connect($servername, $username, $password, $database);
+            if ($new_connect->connect_error) {
+                throw new Exception('Connect Error (' . $new_connect->connect_errno . ') ' . $new_connect->connect_error);
+            }
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            echo 'Caught exception: ' . $e->getMessage() . PHP_EOL;
+        }
         return  $new_connect;
-        
     }
     public static function checkConnection($conn)
     {
@@ -22,9 +29,9 @@ class MySQL
     static public function query_insertInto($table, $conn)
     {
         $sql = "
-        INSERT INTO ". 
-        $table. 
-        " (planet_id, planet_name, region, population, discovered_date) 
+        INSERT INTO " .
+            $table .
+            " (planet_id, planet_name, region, population, discovered_date) 
         VALUES 
         (15, 'Neptuno', 'Core Worlds', 0, '1999-01-01')
         ";
@@ -33,7 +40,7 @@ class MySQL
         } else {
             echo "New Error: " . $sql . $conn->error . PHP_EOL;
         }
-        echo "Distroying connection". PHP_EOL;
+        echo "Distroying connection" . PHP_EOL;
         $conn->close();
     }
     static public function selectFrom($conn, $column, $table, $whereConditional, $whereValue)
@@ -45,12 +52,10 @@ class MySQL
 
         $result = $conn->query($sql);
 
-        if ($result->num_rows > 0)
-        {
-            while ($row = $result->fetch_assoc())
-            {
-                foreach($row as $key => $value) {
-                    print_r($row). PHP_EOL;
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                foreach ($row as $key => $value) {
+                    print_r($row) . PHP_EOL;
                 }
             }
         } else {
@@ -62,17 +67,14 @@ class MySQL
     static public function updateSet($conn, $table, $column, $newValue, $whereConditional, $whereValue)
     {
         $sql = "
-                UPDATE " . $table . 
-                 " SET " .$column. "="."'{$newValue}'".  
-                 " WHERE ". $whereConditional. "=". $whereValue;
-        
-        if ($conn->query($sql)) 
-        {
-            echo 'The number of affected rows is: '. $conn->affected_rows ."". PHP_EOL;
+                UPDATE " . $table .
+            " SET " . $column . "=" . "'{$newValue}'" .
+            " WHERE " . $whereConditional . "=" . $whereValue;
+
+        if ($conn->query($sql)) {
+            echo 'The number of affected rows is: ' . $conn->affected_rows . "" . PHP_EOL;
             echo "Record updated succesfully" . PHP_EOL;
-        } 
-        else 
-        {
+        } else {
             echo " Error updating error: " . $conn->error;
         }
         echo "Distroying connection" . PHP_EOL;
@@ -80,17 +82,15 @@ class MySQL
     }
     static public function deleteRows($conn, $table, $whereConditional, $whereValue)
     {
-    
+
         $sql = "
-                 DELETE FROM ". $table.
-                " WHERE ". $whereConditional. "=". $whereValue;
-    
-        if ($conn->query($sql)) 
-        {
+                 DELETE FROM " . $table .
+            " WHERE " . $whereConditional . "=" . $whereValue;
+
+        if ($conn->query($sql)) {
             echo 'The number of affected rows is: ' . $conn->affected_rows . "" . PHP_EOL;
             echo "Record deleted successfully";
-        } else 
-        {
+        } else {
             echo "Error deleting record: " . $conn->error;
         }
         $conn->close();
@@ -107,10 +107,9 @@ class MySQL
         echo "Distroying connection" . PHP_EOL;
         $conn->close();
     }
-    public static function createTable($conn,$servername, $username, $password, $databaseName, $tableName)
+    public static function createTable($conn, $servername, $username, $password, $databaseName, $tableName)
     {
-        if(self::viewDatabase($conn) == $databaseName)
-        {   
+        if (self::viewDatabase($conn) == $databaseName) {
             // Falta mejorar la logica del viewDatabase
             $sql = "CREATE TABLE $tableName";
             if ($conn->query($sql)) {
@@ -124,23 +123,23 @@ class MySQL
     {
         $command = "mysqldump -h $servername -u $username .p$password $database > $DumpPath";
         $output = shell_exec($command);
-    
+
         if ($output === null) {
             echo "Database dump created successfully at $DumpPath" . PHP_EOL;
         } else {
             echo "Error creating database dump: " . $output . PHP_EOL;
         }
     }
-    public static function viewDatabase($conn){
+    public static function viewDatabase($conn)
+    {
         $sql = "SELECT DATABASE()";
         $output = $conn->query($sql);
 
         // El output de esto es un objeto tipo msqli objetc -> MEJORAR LA LOGICA DE ESTO
 
-        if ($output)
-        {
+        if ($output) {
             echo 'YOU ARE USING THIS DATABASE: ' . PHP_EOL;
-            print_r(value: $output) . PHP_EOL; 
+            print_r(value: $output) . PHP_EOL;
         }
         $conn->close();
         return $output;
@@ -149,7 +148,7 @@ class MySQL
     {
         $sql = "SHOW DATABASES";
         $output = $conn->query($sql);
-        
+
         // El output de esto es un objeto tipo msqli objetc -> MEJORAR LA LOGICA DE ESTO
 
         if ($output) {
@@ -171,7 +170,7 @@ class MySQL
         echo "Distroying connection" . PHP_EOL;
         $conn->close();
     }
-}   
+}
 // Create connection
 $conn = MySQL::connect($servername, $username, $password, 'Imperial_Database');
 MySQL::checkConnection($conn);
@@ -183,7 +182,7 @@ MySQL::checkConnection($conn);
 // Reading ALL Data from a table
 $conn = MySQL::connect($servername, $username, $password, 'Imperial_Database');
 MySQL::checkConnection($conn);
-MySQL::selectFrom($conn, '*', 'Planets', 'planet_id', 15).PHP_EOL;
+MySQL::selectFrom($conn, '*', 'Planets', 'planet_id', 15) . PHP_EOL;
 
 // Update Data
 $conn = MySQL::connect($servername, $username, $password, 'Imperial_Database');
@@ -199,4 +198,4 @@ MySQL::checkConnection($conn);
 
 $conn = MySQL::connect($servername, $username, $password, 'Imperial_Database');
 MySQL::checkConnection($conn);
-MySQL::showDatabases($conn);
+//MySQL::showDatabases($conn);

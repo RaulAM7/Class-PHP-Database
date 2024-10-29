@@ -3,7 +3,7 @@ $servername = "localhost";
 $username = "raul";
 $password = "student2024";
 $database = "Imperial_Database";
-// CREATE
+
 class MySQL
 {
     public static function connect($servername, $username, $password, $database)

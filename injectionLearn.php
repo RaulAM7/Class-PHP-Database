@@ -6,7 +6,7 @@ echo 'asdaosjbdiahjsdbiasijkdvhasd'.PHP_EOL;
 // 0.- SQL based on 1=1 is always True
 
 // Code base
-$txtUserId = getRequestString("UserId");
+//$txtUserId = getRequestString("UserId");
 $txtSQL = "SELECT * FROM Users WHERE UserId = " + $txtUserId;
 
 // Si le metes 105 OR 1=1
@@ -20,8 +20,8 @@ $txtSQL = "SELECT * FROM Users WHERE UserId = " + $txtUserId;
 // 1.- SQL Injection based on = is always true 
 
 // Code base
-$uName = getRequestString("username");
-$uPass = getRequestString("userpassword");
+//$uName = getRequestString("username");
+//$uPass = getRequestString("userpassword");
 
 $sql = 'SELECT * FROM Users WHERE Name ="' + $uName + '" AND Pass ="' + $uPass + '"';
 
@@ -49,7 +49,7 @@ The SQL statement below will return all rows from the "Users" table, then delete
 
 // Code base
 
-$txtUserId = getRequestString("UserId");
+//$txtUserId = getRequestString("UserId");
 $txtSQL = "SELECT * FROM Users WHERE UserId = " + $txtUserId;
 
 // SI le metemos un useID = 105; DROP TABLE Suppliers
@@ -85,4 +85,29 @@ Benefits of Prepared Statements:
 */
 
 
-// Ejemplo de 
+// Ejemplo de Prepared Statements
+
+// Crea la conexion 
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Prepara una query usando declaraciones preparadas
+// Los ? son marcadores de posicion que se llenaran luego de manera segura
+$stmt = $conn->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
+
+// Vincula los paramatros a la consulta preparada, le dice que ambos son strings 
+$stmt->bind_param("ss", $username, $password);
+
+
+/* Se utiliza la variable superglobal de PHP
+Es un array asociativo con todos los datos enviados por metodo POST
+
+$username = $_POST['username']; -> Obtiene lo que el usuario escribio en el campo name=username
+*/
+$username = $_POST['username'];
+$password = $_POST['password'];
+
+// Ejecuta la query  con los parametros vinculados
+$stmt->execute();
+
+// Almacena el resultado de la query. 
+$result = $stmt->get_result();

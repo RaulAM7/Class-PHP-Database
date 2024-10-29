@@ -110,7 +110,8 @@ class MySQL
     public static function createTable($conn,$servername, $username, $password, $databaseName, $tableName)
     {
         if(self::viewDatabase($conn) == $databaseName)
-        {
+        {   
+            // Falta mejorar la logica del viewDatabase
             $sql = "CREATE TABLE $tableName";
             if ($conn->query($sql)) {
                 echo 'NEW Table created successfully';
@@ -132,11 +133,31 @@ class MySQL
     }
     public static function viewDatabase($conn){
         $sql = "SELECT DATABASE()";
+        $output = $conn->query($sql);
 
-        $output = shell_exec($sql); 
+        // El output de esto es un objeto tipo msqli objetc -> MEJORAR LA LOGICA DE ESTO
 
-        echo $output . PHP_EOL;
+        if ($output)
+        {
+            echo 'YOU ARE USING THIS DATABASE: ' . PHP_EOL;
+            print_r(value: $output) . PHP_EOL; 
+        }
         $conn->close();
+        return $output;
+    }
+    public static function showDatabases($conn)
+    {
+        $sql = "SHOW DATABASES";
+        $output = $conn->query($sql);
+        
+        // El output de esto es un objeto tipo msqli objetc -> MEJORAR LA LOGICA DE ESTO
+
+        if ($output) {
+            echo 'YOU ARE USING THIS DATABASE: ' . PHP_EOL;
+            print_r($output) . PHP_EOL;
+        }
+        $conn->close();
+        return $output;
     }
     public static function deleteDatabase($conn, $servername, $username, $password, $databaseName)
     {
@@ -178,4 +199,4 @@ MySQL::checkConnection($conn);
 
 $conn = MySQL::connect($servername, $username, $password, 'Imperial_Database');
 MySQL::checkConnection($conn);
-MySQL::viewDatabase($conn);
+MySQL::showDatabases($conn);

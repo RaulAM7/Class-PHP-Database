@@ -171,6 +171,7 @@ class MySQL
         $conn->close();
     }
 }
+/*
 // Create connection
 $conn = MySQL::connect($servername, $username, $password, 'Imperial_Database');
 MySQL::checkConnection($conn);
@@ -199,3 +200,4 @@ MySQL::checkConnection($conn);
 $conn = MySQL::connect($servername, $username, $password, 'Imperial_Database');
 MySQL::checkConnection($conn);
 //MySQL::showDatabases($conn);
+*/
